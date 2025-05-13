@@ -1,6 +1,14 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router";
 
-const Input = ({ id, type = "text", placeholder, value, onChange }) => (
+const Input = ({
+  id,
+  type = "text",
+  placeholder,
+  value,
+  onChange,
+  showError,
+}) => (
   <div className="relative w-full">
     <input
       id={id}
@@ -8,12 +16,17 @@ const Input = ({ id, type = "text", placeholder, value, onChange }) => (
       value={value}
       onChange={onChange}
       placeholder=" "
-      required
-      className="peer w-full px-3.5 pt-3 pb-2 text-sm text-[#1D2226] border border-[#CBCBCB] rounded-md appearance-none focus:outline-none focus:ring-[0.5px] focus:ring-[#6C25FF] focus:border-[#6C25FF]"
+      className={`peer w-full px-3.5 pt-3 pb-2 text-sm text-[#1D2226] border rounded-md appearance-none focus:outline-none focus:ring-[0.5px] 
+        ${
+          showError
+            ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+            : "border-[#CBCBCB] focus:ring-[#6C25FF] focus:border-[#6C25FF]"
+        }`}
     />
     <label
       htmlFor={id}
-      className="absolute text-[13px] text-[#6C25FF] left-2 -top-2 pl-1.5 pr-2 leading-[17px] bg-[#F7F8F9] "
+      className={`absolute text-[13px] left-2 -top-2 pl-1.5 pr-2 leading-[17px] bg-[#F7F8F9] 
+        ${showError ? "text-red-500" : "text-[#6C25FF]"}`}
     >
       {placeholder}
       <span className="ml-0.5 text-red-500">*</span>
@@ -22,6 +35,9 @@ const Input = ({ id, type = "text", placeholder, value, onChange }) => (
 );
 
 const Signup = () => {
+  const navigate = useNavigate();
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -42,8 +58,18 @@ const Signup = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setIsSubmitted(true);
+
+    const isFormValid =
+      formData.email.trim() &&
+      formData.password.trim() &&
+      formData.name.trim() &&
+      formData.phone.trim() &&
+      formData.company.trim();
+    if (!isFormValid) return;
+
     console.log("Form submitted:", formData);
-    // you can send formData to backend here
+    navigate("/profile");
   };
 
   return (
@@ -58,6 +84,7 @@ const Signup = () => {
           placeholder="Full Name"
           value={formData.name}
           onChange={handleChange}
+          showError={isSubmitted && !formData.name.trim()}
         />
         <Input
           id="phone"
@@ -65,6 +92,7 @@ const Signup = () => {
           placeholder="Phone number"
           value={formData.phone}
           onChange={handleChange}
+          showError={isSubmitted && !formData.phone.trim()}
         />
         <Input
           id="email"
@@ -72,6 +100,7 @@ const Signup = () => {
           placeholder="Email address"
           value={formData.email}
           onChange={handleChange}
+          showError={isSubmitted && !formData.email.trim()}
         />
         <Input
           id="password"
@@ -79,12 +108,14 @@ const Signup = () => {
           placeholder="Password"
           value={formData.password}
           onChange={handleChange}
+          showError={isSubmitted && !formData.password.trim()}
         />
         <Input
           id="company"
           placeholder="Company name"
           value={formData.company}
           onChange={handleChange}
+          showError={isSubmitted && !formData.company.trim()}
         />
 
         {/* Radio Group */}
