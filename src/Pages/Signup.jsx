@@ -17,10 +17,9 @@ const Input = ({
       onChange={onChange}
       placeholder=" "
       className={`peer w-full px-3.5 pt-3 pb-2 text-sm text-[#1D2226] border rounded-md appearance-none focus:outline-none focus:ring-[0.5px] 
-        ${
-          showError
-            ? "border-red-500 focus:ring-red-500 focus:border-red-500"
-            : "border-[#CBCBCB] focus:ring-[#6C25FF] focus:border-[#6C25FF]"
+        ${showError
+          ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+          : "border-[#CBCBCB] focus:ring-[#6C25FF] focus:border-[#6C25FF]"
         }`}
     />
     <label
@@ -68,7 +67,10 @@ const Signup = () => {
       formData.company.trim();
     if (!isFormValid) return;
 
-    console.log("Form submitted:", formData);
+    // Save to localStorage
+    localStorage.setItem("userEmail", formData.email);
+    localStorage.setItem("userName", formData.name);
+
     navigate("/profile");
   };
 
@@ -118,7 +120,6 @@ const Signup = () => {
           showError={isSubmitted && !formData.company.trim()}
         />
 
-        {/* Radio Group */}
         <div>
           <span className="text-[13px] leading-[17px] text-[#1D2226]">
             Are you an Agency?<span className="text-red-500 ml-1">*</span>
@@ -149,7 +150,6 @@ const Signup = () => {
           </div>
         </div>
 
-        {/* Submit */}
         <button
           type="submit"
           className="bg-[#6C25FF] rounded-md text-white text-base leading-[17px] font-medium w-full h-[46px] cursor-pointer transition-all duration-300 ease-in-out hover:bg-[#5A1EDB] mt-[88px]"
